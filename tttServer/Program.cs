@@ -7,9 +7,7 @@ namespace tttServer
         static void Main(string[] args)
         {
             GmServer gm = new GmServer();
-            GameController controller = new GameController();
-
-            gm.Connect();
+            gm.ConnectOverIP();
         }
     }
 }
