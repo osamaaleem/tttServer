@@ -14,6 +14,8 @@ namespace tttServer
         private TcpListener gServer;
         BinaryFormatter bf = new BinaryFormatter();
         Thread plOne, plTwo;
+        private bool flagOne, flagTwo;
+        private string nameOne,nameTwo;
         public void ConnectOverIP()
         {
 
@@ -22,29 +24,26 @@ namespace tttServer
             pOne = gServer.AcceptTcpClient();
             Console.WriteLine($"Connected to {pOne.Client.RemoteEndPoint}");
             bf.Serialize(pOne.GetStream(), "1");
-            string name = (string)bf.Deserialize(pOne.GetStream());
-            Console.WriteLine($"Player One Username : {name}");
+            nameOne = (string)bf.Deserialize(pOne.GetStream());
+            Console.WriteLine($"Player One Username : {nameOne}");
             pTwo = gServer.AcceptTcpClient();
             Console.WriteLine($"Connected to {pTwo.Client.RemoteEndPoint}");
             bf.Serialize(pTwo.GetStream(), "2");
-            name = (string)bf.Deserialize(pTwo.GetStream());
-            Console.WriteLine($"Player Two Username : {name}");
-            gameController = new GameController();
+            nameTwo = (string)bf.Deserialize(pTwo.GetStream());
+            Console.WriteLine($"Player Two Username : {nameTwo}");
+            gameController = new GameController(nameOne,nameTwo);
             //plOne = new Thread(() => Communicate(pOne, pTwo, "0"));
             //plTwo = new Thread(() => Communicate(pTwo, pOne, "1"));
             //plOne.Start();
             //plTwo.Start();
-            plOne = new Thread(() => ReciveAction(pOne, pTwo, "0", "1"));
-            plTwo = new Thread(() => ReciveAction(pTwo, pOne, "1", "0"));
-            plOne.Start();
-            plTwo.Start();
-
+            //plOne = new Thread(() => ReciveAction(pOne, pTwo, "0", "1"));
+            //plTwo = new Thread(() => ReciveAction(pTwo, pOne, "1", "0"));
+            //plOne.Start();
+            //plTwo.Start();
+            ReciveAction(pOne, pTwo, "0", "1");
         }
-
         public void ReciveAction(TcpClient player, TcpClient op, string playerNum, string opPlayer)
         {
-
-            player = gServer.AcceptTcpClient();
             string msg = (string)bf.Deserialize(player.GetStream());
             Monitor.Enter(gameController);
             Console.WriteLine(msg);
@@ -62,7 +61,6 @@ namespace tttServer
         {
 
 
-            op = gServer.AcceptTcpClient();
 
             Console.WriteLine(msg);
             bf.Serialize(op.GetStream(), msg);

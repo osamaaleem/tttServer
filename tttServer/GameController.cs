@@ -6,8 +6,11 @@ namespace tttServer
 {
     class GameController
     {
-        public GameController()
+        private string playerOneName, playerTwoName;
+        public GameController(string one,string two)
         {
+            playerOneName = one;
+            playerTwoName = two;
             Console.WriteLine("Initializing Game Grid .....");
             Console.WriteLine();
             for (int i = 0; i < gameProgress.GetLength(0); i++)
@@ -91,6 +94,14 @@ namespace tttServer
             {
                 int player = gameProgress[0, 2] + 1;
                 winner = player.ToString();
+            }
+            if(winner == "1")
+            {
+                winner = playerOneName;
+            }
+            else if(winner == "2")
+            {
+                winner = playerTwoName;
             }
         }
     }
