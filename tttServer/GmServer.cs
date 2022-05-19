@@ -22,6 +22,7 @@ namespace tttServer
             Console.Write("Insert IP : ");
             ipAddUser = Console.ReadLine();
             ipAdd = IPAddress.Parse(ipAddUser);
+            Console.WriteLine("Waiting for Player One ...");
             gServer = new TcpListener(ipAdd, 9267);
             gServer.Start();
             pOne = gServer.AcceptTcpClient();
@@ -29,6 +30,7 @@ namespace tttServer
             bf.Serialize(pOne.GetStream(), "1");
             nameOne = (string)bf.Deserialize(pOne.GetStream());
             Console.WriteLine($"Player One Username : {nameOne}");
+            Console.WriteLine("Waiting for Player Two");
             pTwo = gServer.AcceptTcpClient();
             Console.WriteLine($"Connected to {pTwo.Client.RemoteEndPoint}");
             bf.Serialize(pTwo.GetStream(), "2");
