@@ -8,7 +8,8 @@ namespace tttServer
 {
     class GmServer
     {
-        private IPAddress ipAdd = IPAddress.Parse("127.0.0.1");
+        string ipAddUser;
+        private IPAddress ipAdd;
         GameController gameController;
         private TcpClient pOne, pTwo;
         private TcpListener gServer;
@@ -18,7 +19,9 @@ namespace tttServer
         private string nameOne,nameTwo;
         public void ConnectOverIP()
         {
-
+            Console.Write("Insert IP : ");
+            ipAddUser = Console.ReadLine();
+            ipAdd = IPAddress.Parse(ipAddUser);
             gServer = new TcpListener(ipAdd, 9267);
             gServer.Start();
             pOne = gServer.AcceptTcpClient();
@@ -46,13 +49,13 @@ namespace tttServer
         {
             string msg = (string)bf.Deserialize(player.GetStream());
             Monitor.Enter(gameController);
-            Console.WriteLine(msg);
+            Console.WriteLine($"Msg from Client : {msg}");
             string[] data = msg.Split(':');
             string btnName = data[0];
             string grid = data[1] + ":" + data[2];
             gameController.GameProgressKeep(grid, playerNum);
             string serverMsg = $"{btnName}:{playerNum}:{GameController.winner}";
-            Console.WriteLine("Server msg : " + serverMsg);
+            //Console.WriteLine("Server msg : " + serverMsg);
             SendAction(op, serverMsg);
             ReciveAction(op, player, opPlayer, playerNum);
             Monitor.Exit(gameController);
@@ -62,7 +65,7 @@ namespace tttServer
 
 
 
-            Console.WriteLine(msg);
+            Console.WriteLine($"Msg to Client : {msg}");
             bf.Serialize(op.GetStream(), msg);
 
         }
